@@ -1,6 +1,7 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 
+from lmsfeatures.models import Courses
 from solo.models import SingletonModel
 
     
@@ -10,7 +11,7 @@ class Product(models.Model):
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/', default='products/default.jpg')  # Add this field
-
+    course = models.ForeignKey(Courses,on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
         return self.name
 class ExtraCharges(models.Model):
