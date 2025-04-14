@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     # 'hrm',
     'template',
+    'template1',
     "phonenumber_field",
     'lmsfeatures',
     'cms',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'solo',
     'landingpage',
     # 'phonebook',
+    
     'books',
     'globalapp',
     'ckeditor',
@@ -79,7 +81,7 @@ ROOT_URLCONF = 'starterproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'template1/templates/template')],  # This must point to the templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

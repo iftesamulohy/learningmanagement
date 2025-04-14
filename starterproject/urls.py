@@ -29,6 +29,7 @@ urlpatterns = [
     path('', include('books.urls')),
     path('', include('lmsfeatures.urls')),
     path('', include('template.urls')),
+    path('', include('template1.urls')),
     # path('', include('phonebook.urls')),
     path('', include('filehandler.urls')),
     path('', include('globalapp.urls')),

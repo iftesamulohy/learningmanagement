@@ -9,6 +9,8 @@ from globalapp.ed import encode_jwt
 from users.models import Users
 from django.contrib.auth.hashers import make_password
 from sslcommerz_lib import SSLCOMMERZ
+
+
 # Create your views here.
 class CoursesViewSet(BaseViews):
     model_name = Courses
