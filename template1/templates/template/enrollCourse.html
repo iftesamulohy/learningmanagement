@@ -532,6 +532,75 @@
               <h2 class="text-2xl font-semibold text-gray-800 mb-6">My Enrolled Courses</h2>
               
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% if enrolled_courses %}
+                    {% for course in enrolled_courses %}
+                        <!-- Course Card 1 - Full Payment -->
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="relative">
+                                <img src="{{course.course_id.course_thumbnail.url}}" alt="{{ course.course_id }}" class="w-full h-48 object-cover">
+                                <div class="absolute top-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded text-xs">
+                                    {{ course.payment_type|title }}
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-800">{{ course.course_id }}</h3>
+                                    <span class="text-sm font-bold text-indigo-600">
+                                        {{ course.payment_type|title }}
+                                    </span>
+                                </div>
+                                
+                                <div class="text-sm text-gray-600 mb-3">
+                                  {{ course.course_id.description|safe }}
+                                </div>
+                                
+                                <div class="flex items-center text-gray-500 text-sm mb-3">
+                                    <div class="mr-4">
+                                        <i class="fas fa-user-graduate mr-1"></i>
+                                       {{course.course_id.total_students}} students
+                                    </div>
+                                    <div class="mr-4">
+                                        <i class="fas fa-video mr-1"></i>
+                                        {{course.course_id.video_count}} videos
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-question-circle mr-1"></i>
+                                        {{course.course_id.quiz_count}} quizzes
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-center items-center mt-4">
+                                    {% comment %} <div class="text-gray-700">
+                                      <span class="text-sm">Enrolled: {{ course.Created_at|date:"Y-m-d" }}</span>
+                                    </div> {% endcomment %}
+                                    <a href="{% url 'enroll_course' slug=course.course_id.slug %}" 
+                                    class="px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition duration-200">
+                                    Continue
+                                 </a>
+                                </div>
+                            </div>
+                        </div>
+            
+                    {% endfor %}
+                {% else %}
+                    <!-- No Courses Enrolled - Default Display -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                        <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                            <div class="mb-4 text-indigo-600">
+                                <i class="fas fa-book-open text-6xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">No Courses Enrolled</h3>
+                            <p class="text-gray-600 mb-4">You haven't enrolled in any courses yet. Explore our catalog and start learning today!</p>
+                            <a href="#" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200">Browse Courses</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+
+              
+              {% comment %} <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Course Card 1 - Full Payment -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                   <div class="relative">
@@ -629,59 +698,7 @@
                   </div>
                 </div>
           
-                <!-- Course Card 3 - Installment Payment -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                  <div class="relative">
-                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                      <span class="text-gray-500">No Image</span>
-                    </div>
-                    <div class="absolute top-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded text-xs">
-                      Beginner
-                    </div>
-                  </div>
-                  
-                  <div class="p-4">
-                    <div class="flex justify-between items-start mb-2">
-                      <h3 class="text-lg font-semibold text-gray-800">UI/UX Design Principles</h3>
-                      <span class="text-sm font-bold text-indigo-600">
-                        Installment
-                      </span>
-                    </div>
-                    
-                    <div class="text-sm text-gray-600 mb-3">
-                      Learn essential design concepts and practices for creating user-friendly digital experiences that delight users...
-                    </div>
-                    
-                    <div class="flex items-center text-gray-500 text-sm mb-3">
-                      <div class="mr-4">
-                        <i class="fas fa-user-graduate mr-1"></i>
-                        645 students
-                      </div>
-                      <div class="mr-4">
-                        <i class="fas fa-video mr-1"></i>
-                        29 videos
-                      </div>
-                      <div>
-                        <i class="fas fa-question-circle mr-1"></i>
-                        8 quizzes
-                      </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                      <p class="text-sm font-medium text-gray-700 mb-1">Payment Progress</p>
-                      <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 33%"></div>
-                      </div>
-                    </div>
-                    
-                    <div class="flex justify-between items-center mt-4">
-                      <div class="text-gray-700">
-                        <span class="text-sm">Enrolled: Apr 5, 2025</span>
-                      </div>
-                      <a href="#" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition duration-200">Continue</a>
-                    </div>
-                  </div>
-                </div>
+               
           
                
                 <div class="col-span-1 md:col-span-2 lg:col-span-3">
@@ -695,7 +712,7 @@
                   </div>
                 </div>
                 
-              </div>
+              </div>  {% endcomment %}
             </div>
           </main>
       </div>

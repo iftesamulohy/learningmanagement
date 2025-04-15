@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.models import Users  # Your custom user model
-from lmsfeatures.models import EnrollCourse
-
+from lmsfeatures.models import Courses, EnrollCourse
+from django.shortcuts import get_object_or_404
 class LoginTemplateView(TemplateView):
     template_name = 'login.html'
 
@@ -77,16 +77,65 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 class EnrollCourseView(LoginRequiredMixin, TemplateView):
     template_name = 'enrollCourse.html'
-    login_url = 'login'
+    login_url = 'login'  # Redirect to login page if not authenticated
     
     def get_context_data(self, **kwargs):
+        """
+        Add the enrolled courses of the current user (filtered by email) to the context data.
+        """
         context = super().get_context_data(**kwargs)
-        # Get all enrolled courses for the current user
-        context['enrolled_courses'] = EnrollCourse.objects.filter(user_id=self.request.user)
+        
+        # Get the current user
+        user = self.request.user
+        
+        # Fetch all the courses the user is enrolled in, filtered by email
+        enrolled_courses = EnrollCourse.objects.filter(user_id__email=user.email)
+        
+        # Serialize the courses data
+        
+        print(context)
+        context['enrolled_courses'] = enrolled_courses
         return context
     
 class EnrollSingleCourseView(LoginRequiredMixin, TemplateView):
     template_name = 'singleCourse.html'
     login_url = 'login'
     
-   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get('slug')
+        
+        # Get course with all related objects pre-fetched for performance
+        course = get_object_or_404(
+            Courses.objects.prefetch_related(
+                'milestones',
+                'milestones__modules',
+                'milestones__modules__contents'
+            ), 
+            slug=slug
+        )
+        
+        # Count the completed lessons (you might need to adjust this based on your user progress tracking)
+        completed_lessons_count = 0  # This should be from user progress
+        total_lessons = sum(
+            module.contents.count() 
+            for milestone in course.milestones.all() 
+            for module in milestone.modules.all()
+        )
+        
+        context['course'] = course
+        context['completed_lessons_count'] = completed_lessons_count
+        context['total_lessons'] = total_lessons
+        context['progress_percentage'] = (completed_lessons_count / total_lessons * 100) if total_lessons > 0 else 0
+        
+        return context
+    def _convert_to_embed_url(self, url):
+        if 'watch?v=' in url:
+            return url.replace('watch?v=', 'embed/')
+        elif 'youtu.be/' in url:
+            video_id = url.split('youtu.be/')[-1]
+            return f'https://www.youtube.com/embed/{video_id}'
+        elif 'youtube.com/shorts/' in url:
+            video_id = url.split('/shorts/')[-1]
+            return f'https://www.youtube.com/embed/{video_id}'
+        return url

@@ -20,7 +20,7 @@ urlpatterns = [
     path('user/logout/', UserLogoutView.as_view(), name='logout'),
     path('user/dashboard/', DashboardView.as_view(), name='dashboard'),
     path('user/dashboard/courses/enroll/', EnrollCourseView.as_view(), name='enroll_course'),
-    path('user/dashboard/courses/single/', EnrollSingleCourseView.as_view(), name='enroll_course'),
+    path('user/dashboard/courses/single/<slug:slug>/', EnrollSingleCourseView.as_view(), name='enroll_course'),
 
 
 ]
